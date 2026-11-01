@@ -1,0 +1,3 @@
+#!/bin/sh
+# Neovim with the iOS/Xcode config in ~/.config/nvim-xcode
+NVIM_APPNAME=nvim-xcode exec nvim "$@"
