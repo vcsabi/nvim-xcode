@@ -14,6 +14,28 @@ local function xcodebuild_device()
   return " " .. vim.g.xcodebuild_device_name
 end
 
+local function resolve_packages()
+  local settings = require("xcodebuild.project.config").settings
+  local project = settings.projectFile
+  if not project or not settings.scheme then
+    vim.notify("Run :XcodebuildSetup first", vim.log.levels.WARN, { title = "Xcodebuild" })
+    return
+  end
+  local kind = project:match("%.xcworkspace$") and "-workspace" or "-project"
+  local cmd = { "xcodebuild", "-resolvePackageDependencies", kind, project, "-scheme", settings.scheme }
+  vim.notify("Resolving packages…", vim.log.levels.INFO, { title = "Xcodebuild" })
+  vim.system(cmd, { text = true }, function(result)
+    vim.schedule(function()
+      if result.code == 0 then
+        vim.notify("Packages resolved", vim.log.levels.INFO, { title = "Xcodebuild" })
+      else
+        local err = (result.stderr ~= "" and result.stderr or result.stdout):sub(-1500)
+        vim.notify("Package resolution failed:\n" .. err, vim.log.levels.ERROR, { title = "Xcodebuild" })
+      end
+    end)
+  end)
+end
+
 return {
   {
     "wojciech-kulik/xcodebuild.nvim",
@@ -78,6 +100,8 @@ return {
       { "<leader>iR", "<cmd>XcodebuildRun<cr>", desc = "Run Without Building" },
       { "<leader>is", "<cmd>XcodebuildCancel<cr>", desc = "Stop / Cancel" },
       { "<leader>iK", "<cmd>XcodebuildCleanBuild<cr>", desc = "Clean Build" },
+      { "<leader>iD", "<cmd>XcodebuildCleanDerivedData<cr>", desc = "Delete DerivedData" },
+      { "<leader>iu", resolve_packages, desc = "Resolve Packages" },
       { "<leader>it", "<cmd>XcodebuildTest<cr>", desc = "Run Tests" },
       { "<leader>it", "<cmd>XcodebuildTestSelected<cr>", mode = "v", desc = "Run Selected Tests" },
       { "<leader>iT", "<cmd>XcodebuildTestClass<cr>", desc = "Run Test Class" },

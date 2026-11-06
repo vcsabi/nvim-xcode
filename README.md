@@ -59,6 +59,7 @@ after that completion and diagnostics work across files.
 | `<leader>id` / `ip` | select simulator / scheme |
 | `<leader>ic` / `iC` | code coverage marks / report |
 | `<leader>io` | open in Xcode |
+| `<leader>iK` / `iD` / `iu` | clean build / delete DerivedData / resolve packages |
 | `<leader>dd` / `dD` / `dT` | build & debug / debug without build / debug tests |
 | `<leader>db` / `dm` | toggle breakpoint (persisted) / log breakpoint |
 | `<leader>dc`, `di`, `dO`, `do` | continue, step into, over, out (LazyVim dap) |
